@@ -270,7 +270,7 @@ class Structure_analyze:
             total_list = sorted([location1[0], location1[1], location2[0], location2[1]])
             portion1 = (total_list[2] - total_list[1] + 1) / (location1[1] - location1[0] + 1)  ## how much proportion the intersected sequence occupied on seq1
             portion2 = (total_list[2] - total_list[1] + 1) / (location2[1] - location2[0] + 1)  ## how much proportion the intersected sequence occupied on seq2
-            if portion1 >= lportion and portion2 >= rportion:
+            if portion1 >= lportion or portion2 >= rportion:
                 return True
             else:
                 return False
@@ -443,8 +443,8 @@ class Structure_analyze:
         cluster_file = ''.join([input_fa, '.clust.info'])
         ### vsearch can automaticaly output consencus sequence of clusters.
         run_cluster = subprocess.Popen(
-            ['vsearch', '--cluster_fast', input_fa, '--id', str(id), '--strand', 'both',
-             '--clusterout_id', '--consout', cons_name, '--blast6out', cluster_file],
+            ['vsearch', '--cluster_fast', input_fa, '--id', str(id), '--strand', 'both', '--threads', str(self.process_num),
+             '--clusterout_id', '--consout', cons_name, '--blast6out', cluster_file, '--quiet'],
             stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
         run_cluster.wait()
 
@@ -492,7 +492,7 @@ class Structure_analyze:
     def Copy_count(self, query_file, insertion_length_vary, distance):
         blastn_opt = ''.join([query_file, '.tbl'])
         blastn_pro = subprocess.Popen(
-            ['blastn', '-db', self.genomdb, '-query', query_file, '-num_threads', str(self.process_num), '-max_target_seqs', '20000',
+            ['blastn', '-db', self.genomdb, '-query', query_file, '-num_threads', str(self.process_num), '-max_target_seqs', '200000', '-evalue', '1e-5',
              '-outfmt', '6 qseqid sseqid pident qstart qend sstart send evalue qlen', '-out', blastn_opt])
         blastn_pro.wait()
 
@@ -501,11 +501,11 @@ class Structure_analyze:
             for line in F:
                 splitlines = line.rstrip().split('\t')
                 query_name, chrm, identity, qstart, qend, sstart, send, evalue, qlen = splitlines[:9]
-                hit_len = abs(int(qend) - int(qstart) + 1)
+                hit_len = abs(int(qend) - int(qstart)) + 1
                 min_len = min(insertion_length_vary[query_name])
                 min_len = min([min_len, int(qlen)])
                 coverage = hit_len/int(qlen)
-                if float(identity) < 80 or float(evalue) > 1e-5 or hit_len < min_len * 0.8:
+                if float(identity) < 80 or hit_len < min_len * 0.8:
                     continue
                 if int(sstart) < int(send):
                     START = sstart
@@ -581,7 +581,6 @@ class Structure_analyze:
 
         ## Run hammerhead detection program
         trf_datfile = [''.join(['trf/', i]) for i in os.listdir('trf') if i.endswith('.fa.dat') and os.path.getsize(''.join(['trf/', i]))]
-
         already_list = []
         if os.path.exists('log.txt'):
             with open('log.txt', 'r') as F:
@@ -617,15 +616,25 @@ class Structure_analyze:
                                          stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
             mkblastdb.wait()
 
+        complement = {'A': "T", "T": "A", "G": "C", "C": "G",
+                      "K": "M", "M": "K", "Y": "R", "R": "Y", "S": "S", "W": "W",
+                      "B": "V", "V": "B", "H": "D", "D": "H", "N": "N", "X": "X"}
+
         insertion_length = {}
         with open(retrozyme_monomer, 'w') as wF:
             for rtztbl in retrozyme_list:
                 with open(rtztbl, 'r') as rF:
                     for line in rF:
                         line = line.rstrip().split('\t')
+                        if line[5] == '-': ## In case the consensus sequence is on reverse strand.
+                            seq = list(line[11])
+                            seq.reverse()
+                            seq = ''.join([complement[i] for i in seq])
+                        else:
+                            seq = line[11]
                         insertion_length[line[7]] = line[4]
                         wF.write(''.join(['>', line[7],'\n']))
-                        wF.write(''.join([line[11], '\n']))
+                        wF.write(''.join([seq, '\n']))
         ## Build consensus sequence
         subclass_dict = self.vsearch_clust(retrozyme_monomer, retrozyme_monomer_cons, 'subclass', id=0.9)
         ## To obtain the varied length of every class of retrozymes.
@@ -643,6 +652,11 @@ class Structure_analyze:
                 with open(rtztbl, 'r') as rF:
                     for line in rF:
                         line = line.rstrip().split('\t')
+                        if line[5] == '-': ## In case the consensus sequence is on reverse strand.
+                            seq = list(line[11])
+                            seq.reverse()
+                            seq = ''.join([complement[i] for i in seq])
+                            line[11]=seq
                         insertion_name = line[7]
                         subclass_name = subclass_dict[insertion_name]
                         if subclass_name in cluster_count_dict:
