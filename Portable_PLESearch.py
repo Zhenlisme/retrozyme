@@ -8,7 +8,6 @@ This program is supposed to find and distinguish different subtypes of PLE: Nept
 The RT gene of PLE should be in upstream (within 1000 bp) of GIY-YIG gene. (positive strand).
 """
 
-
 class Homologous_search:
     def __init__(self, RT_GIY_hmm, genome, wkdir, process_num):
         self.RT_GIY_hmm = RT_GIY_hmm
@@ -26,7 +25,7 @@ class Homologous_search:
         orf_file = ''.join([subgenome, '.orf'])
         hmm_opt = ''.join([subgenome, '.hmmsearch.out'])
         """The index of getorf output starts from 1, not 0"""
-        get_orf = subprocess.Popen(['getorf', '-sequence', subgenome, '-outseq', orf_file, '-minsize', '200'],
+        get_orf = subprocess.Popen(['getorf', '-sequence', subgenome, '-outseq', orf_file, '-minsize', '200', '-maxsize', '30000'],
                                    stderr=subprocess.DEVNULL)
         get_orf.wait()
 
@@ -48,8 +47,12 @@ class Homologous_search:
                     continue
                 splitlines = re.split('\s+', line.rstrip())
                 sub_class = splitlines[3]
-                chrm_name = "_".join(splitlines[0].split('_')[:-1])
+                subchrname = "_".join(splitlines[0].split('_')[:-1])
+                chrm_name, START = subchrname.split('startat')
                 start, end = re.findall('\[(\d+)\s+-\s+(\d+)\]', line)[0]
+                start = str(int(start) + int(START))
+                end = str(int(end) + int(START))
+
                 aa_start,aa_end=splitlines[19:21]
                 score = splitlines[7]
                 c_evalue,i_evalue = splitlines[11:13]
@@ -131,7 +134,6 @@ class Homologous_search:
             RT_opline = '\n'.join(['\t'.join(line) for line in RT_opline])
             F.write(RT_opline)
 
-        ## merge helicase or rep domain bedfile, use bedtools cluster to merge. Splicing sites
         def merge_rtgiy(bedfile, opfile):
             cluster_file = ''.join([bedfile, '.cluster'])
             with open(cluster_file, 'w') as F:
@@ -179,18 +181,15 @@ class Homologous_search:
         if not giy_signal or not rt_signal:  ## Either hel or rep data is null
             return []
 
-        ## To find rep and helicase gene pairs that rep is less than 1500 bp upstream of hel
         window_opt =  ''.join([subgenome, '.rt_giy.window.bed'])
         with open(window_opt, 'w') as window_F:
-            bedtools_intersect1=subprocess.Popen(['bedtools', 'window','-a', merge_rt, '-b', merge_giy, '-l', '0', '-r','1500','-sm','-sw'], stdout=window_F)
+            bedtools_intersect1=subprocess.Popen(['bedtools', 'window','-a', merge_rt, '-b', merge_giy, '-w', '1500','-sm','-sw'], stdout=window_F)
             bedtools_intersect1.wait()
-            #bedtools_intersect2 = subprocess.Popen(['bedtools', 'window', '-b', merge_rt, '-a', merge_giy, '-l', '0', '-r', '1500', '-sm', '-sw'], stdout=window_F)
-            #bedtools_intersect2.wait()
 
-        os.remove(merge_giy)
-        os.remove(merge_rt)
-        os.remove(GIY_bed)
-        os.remove(RT_bed)
+        #os.remove(merge_giy)
+        #os.remove(merge_rt)
+        #os.remove(GIY_bed)
+        #os.remove(RT_bed)
 
         opseq=[]
         bedlist=[]
@@ -212,75 +211,31 @@ class Homologous_search:
                 loc=sorted([RT_orf[0], RT_orf[1], GIY_orf[0], GIY_orf[1]], key=lambda x:int(x))
                 start,end=loc[0],loc[-1]
                 maximum_length=len(self.genome_dict[chrm])
-                
-                ### Program to find orf boundary iterly.
-                
-                def ORF_iter(left, right):
-                    if int(start)-left > 0:
-                        orfscan_start=int(start)-left
-                    else:
-                        orfscan_start=1
-                    if int(end)+right < maximum_length:
-                        orfscan_stop=int(end)+right
-                    else:
-                        orfscan_stop=maximum_length
-
-                    seqname='.'.join([chrm, str(orfscan_start), str(orfscan_stop),'orf.fa'])
-                    seq=self.genome_dict[chrm][int(orfscan_start)-1:int(orfscan_stop)]
-                    seq=str(seq)
-                    with open(seqname, 'w') as F:
-                        F.write(''.join(['>seq\n', seq, '\n']))
-                    orf_s, orf_e=self.ORF_boundary(seqname)
-                    if orf_s == '0': ##that means no ORF that are longer than 400 bp detected in this extension region
-                        orf_s = int(start)
-                        orf_e = int(end)
-                    else:
-                        orf_s=int(orfscan_start)+int(orf_s)
-                        orf_e=int(orfscan_start)+int(orf_e)
-                    location=sorted([orf_s, orf_e, int(start), int(end)])   ## Try to find the boundary of ORF region.
-                    os.remove(seqname)
-                    signal=0   ## does not need to extend
-
-                    left_distance = abs(location[0]-orfscan_start)
-                    right_distance = abs(orfscan_stop-location[-1])
-                    if left_distance <=100 and location[0] > 110:
-                        signal+=1  ## need to extend left
-                    if right_distance <=100 and abs(location[-1]-maximum_length) > 110:
-                        signal+=2  ## need to extend right
-                    if signal:
-                        return signal
-                    else:
-                        return location
-                
-                left, right=500, 500
-                while True:
-                    location=ORF_iter(left, right)
-                    if location==1:  ## need to extend left
-                        left+=500
-                        location = ORF_iter(left, right)
-                    elif location ==2: ##need to extend right
-                        right+=500
-                        location = ORF_iter(left, right)
-                    elif location == 3:
-                        left += 500
-                        right += 500
-                        location = ORF_iter(left, right)
-                    else:
-                        break
-
-                bedlist.append([chrm, str(location[0]), str(location[-1]), '-'.join([RT_start, RT_end]), '-'.join([GIY_start, GIY_end]),
+                bedlist.append([chrm, str(start), str(end), '-'.join([RT_start, RT_end]), '-'.join([GIY_start, GIY_end]),
                                 strand, splitlines[3], splitlines[9]])
         #bedlist=sorted(bedlist, key=lambda x:[x[0], int(x[1])])
-        os.remove(window_opt)
+        #os.remove(window_opt)
         sys.stdout.write('Find %s RT-GIY blocks in %s\n' % (str(len(bedlist)), os.path.basename(subgenome).replace('.fa','')))
         return bedlist
-    def split_list(self, numbers, num_groups):
-        # Calculate target sum for each group
-        total_sum = sum([i[1] for i in numbers])
-        target_sum = total_sum / num_groups
+    def split_genome(self, chunk_size=200000000, flanking_size=20000, num_groups = 2):
+        if not os.path.exists('genomes'):
+            os.mkdir('genomes')
+        subgenome_list = []
+        for chrm in self.genome_dict:
+            seq_len = len(self.genome_dict[chrm])
+            if seq_len < 1000:  ##Skip chrms whose length is shorter than 1000 bp
+                sys.stdout.write(
+                    "Chrm %s will not be used to detect autonomous Helitron/Helentron as its length is shorter than 1000 bp\n" % chrm)
+                continue
+            subgenome_list.append((chrm, seq_len))
 
+        num_groups = num_groups if num_groups <= len(subgenome_list) else len(subgenome_list)
+        ###  To split the genomes into several files.
+        # Calculate target sum for each group
+        total_sum = sum([i[1] for i in subgenome_list])
+        target_sum = total_sum / num_groups
         # Sort numbers in descending order
-        numbers = sorted(numbers, key=lambda x:-x[1])
+        numbers = sorted(subgenome_list, key=lambda x: -x[1])
         # Split numbers into groups with similar sums
         groups = [[] for i in range(num_groups)]
         group_sums = [0] * num_groups
@@ -289,35 +244,38 @@ class Homologous_search:
             min_sum_index = group_sums.index(min(group_sums))
             groups[min_sum_index].append(number)
             group_sums[min_sum_index] += number[1]
-        return groups
+
+        ## To split big chrms into smaller chunks.
+        subgenome_list = []
+        init_num = 1
+        for subgroup in groups:
+            subgenome = ''.join(['genomes/subgenome', str(init_num), '.fa'])
+            init_num += 1
+            with open(subgenome, 'w') as F:
+                for chrminfo in subgroup:
+                    chrid = chrminfo[0]
+                    seq = self.genome_dict[chrid]
+                    seq_len = len(seq)
+                    num = seq_len // chunk_size
+                    for i in range(num + 1):
+                        start, stop = i * chunk_size, (i + 1) * chunk_size + flanking_size
+                        if start >= seq_len:
+                            continue
+                        if stop > seq_len:
+                            stop = seq_len
+                        subchrm = 'startat'.join([chrid, str(start)])
+                        chunk_seq = str(self.genome_dict[chrid][start:stop])
+                        F.write(''.join(['>', subchrm, '\n']))
+                        F.write(chunk_seq)
+                        F.write('\n')
+            subgenome_list.append(subgenome)
+        return subgenome_list
     def run_multiple_threads(self):
-        if not os.path.exists('genomes'):
-            os.mkdir('genomes')
-        subgenome_list=[]
-        for chrm in self.genome_dict:
-            seq_len=len(self.genome_dict[chrm])
-            if seq_len < 1000: ##Skip chrms whose length is shorter than 1000 bp
-                sys.stdout.write("Chrm %s will not be used to detect autonomous Helitron/Helentron as its length is shorter than 1000 bp\n" % chrm)
-                continue
-            subgenome_list.append((chrm, seq_len))
+        subgenome_list = self.split_genome(chunk_size=200000000, flanking_size=20000, num_groups=200)
         if len(subgenome_list) < self.process_num:
             processnum = len(subgenome_list)
         else:
             processnum = self.process_num
-        genomes_sets=self.split_list(subgenome_list, processnum)
-
-        init_num=1
-        subgenome_list = []
-        for chrmsets in genomes_sets:
-            if chrmsets:
-                subgenome=''.join(['genomes/subgenome', str(init_num) , '.fa'])
-                init_num+=1
-                with open(subgenome, 'w') as F:
-                    for chrm in chrmsets:
-                        F.write(''.join(['>', chrm[0], '\n']))
-                        F.write(str(self.genome_dict[chrm[0]]))
-                        F.write('\n')
-            subgenome_list.append(subgenome)
 
         planpool = ThreadPool(processnum)
         run_result = []

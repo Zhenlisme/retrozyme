@@ -636,7 +636,7 @@ class Structure_analyze:
                         wF.write(''.join(['>', line[7],'\n']))
                         wF.write(''.join([seq, '\n']))
         ## Build consensus sequence
-        subclass_dict = self.vsearch_clust(retrozyme_monomer, retrozyme_monomer_cons, 'subclass', id=0.9)
+        subclass_dict = self.vsearch_clust(retrozyme_monomer, retrozyme_monomer_cons, 'subclass', id=0.8)
         ## To obtain the varied length of every class of retrozymes.
         insertion_length_vary=defaultdict(list)
         for i in subclass_dict:
