@@ -4,9 +4,9 @@ gc()
 
 library(bedtoolsr)
 library(ggplot2)
-options(bedtools.path = "/home/zhenli/bioinfo/bedtools2/bin/")
+options(bedtools.path = "~/bioinfo/bedtools2/bin/")
 
-setwd('/home/zhenli/remote2/Toutatis_backup/Retrozyme/Retrozymes_detection/Xenopus_tropicalis/')
+setwd('~/remote2/Toutatis_backup/Retrozyme/Retrozymes_detection/Xenopus_tropicalis/')
 genome_size_df=read.csv2('genomesize.tbl', header = F, stringsAsFactors = F, sep = '\t')
 head(genome_size_df)
 
@@ -18,7 +18,7 @@ genome_size_df=rbind(
 
 genome_size_df=genome_size_df[order(genome_size_df$V1, genome_size_df$V2),]
 
-gtf <- rtracklayer::import('/home/zhenli/remote2/genomedb/Xenopus_laevis/genomic.gtf')
+gtf <- rtracklayer::import('~/remote2/genomedb/Xenopus_laevis/genomic.gtf')
 
 gtf_df=as.data.frame(gtf)
 head(gtf_df)
@@ -93,9 +93,9 @@ write.table(Anno_df, file = '/home/zhenli/remote2/genomedb/Xenopus_laevis/genic_
             sep = '\t', col.names = T, row.names = F, quote = F)
 
 #########################################################
-setwd('/home/zhenli/remote2/Toutatis_backup/Retrozyme/Retrozymes_detection/Xenopus_tropicalis/')
+setwd('~/remote2/Toutatis_backup/Retrozyme/Retrozymes_detection/Xenopus_tropicalis/')
 
-Anno_df=read.csv2('/home/zhenli/remote2/genomedb/Xenopus_tropicalis/genic_intergenic_region.tbl', 
+Anno_df=read.csv2('~/remote2/genomedb/Xenopus_tropicalis/genic_intergenic_region.tbl', 
                   sep = '\t', header = T, stringsAsFactors = F)
 head(Anno_df)
 Anno_df=Anno_df[order(Anno_df$chrid, as.numeric(Anno_df$start)), ]
