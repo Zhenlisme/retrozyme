@@ -7,18 +7,19 @@ The main analysis scripts are:
 
 ### 1.	RetrozymeSearch230207.py  #  Script for detection of retrozymes in any given genome.
    The following programs are required to run this script:
-  	  - [bedtools = 2.30.0](https://bedtools.readthedocs.io/en/stable/)
-  	  - [blastn = 2.2.31](https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/)
-  	  - [rnabob = 2.2.1](http://eddylab.org/software/rnabob/rnabob.tar.gz)
-      - [RNAfold = 2.6.4](https://www.tbi.univie.ac.at/RNA/)
-  	  - [RNAeval = 2.6.4](https://www.tbi.univie.ac.at/RNA/)
-  	  - [trf = 4.09](https://tandem.bu.edu/trf/trf.html)
-  	  - [vsearch = 2.11.0](https://github.com/torognes/vsearch)
+  	 [bedtools = 2.30.0](https://bedtools.readthedocs.io/en/stable/)
+  	 [blastn = 2.2.31](https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/)
+  	 [rnabob = 2.2.1](http://eddylab.org/software/rnabob/rnabob.tar.gz)
+    [RNAfold = 2.6.4](https://www.tbi.univie.ac.at/RNA/)
+  	 [RNAeval = 2.6.4](https://www.tbi.univie.ac.at/RNA/)
+  	 [trf = 4.09](https://tandem.bu.edu/trf/trf.html)
+  	 [vsearch = 2.11.0](https://github.com/torognes/vsearch)
         
 ### 2.	Portable_PLESearch.py  #  Script for the detection of autonomous Penelope-like elements in any given genome.
-  	  - [bedtools = 2.30.0](https://bedtools.readthedocs.io/en/stable/)
-      - [getorf from emboss = 6.6.0](http://emboss.open-bio.org/)
-      - [hmmer  = 3.3.2](http://hmmer.org/)
+   The following programs are required to run this script:
+  	 [bedtools = 2.30.0](https://bedtools.readthedocs.io/en/stable/)
+    [getorf from emboss = 6.6.0](http://emboss.open-bio.org/)
+    [hmmer  = 3.3.2](http://hmmer.org/)
 
 ### General dependencies are: 
   - python = 3.9.0
