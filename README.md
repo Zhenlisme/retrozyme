@@ -37,6 +37,22 @@ The following programs are required to run this script:
 - [getorf from emboss = 6.6.0](http://emboss.open-bio.org/)
 - [hmmer  = 3.3.2](http://hmmer.org/)
 
+usage: Portable_PLESearch.py [-h] -hmm HMM -g GENOME -o OPDIR [-p PROCESS]
+### Usage of Portable_PLESearch
+```usage: Portable_PLESearch.py [-h] -hmm HMM -g GENOME -o OPDIR [-p PROCESS]```
+#### Where: 
+- ```g``` is the name of a fasta formatted genomic sequence for the target genome.
+- ```h``` is the name of the hmm to use.
+- ```p``` is the number of threads.
+- ```OPDIR``` is the name of the output directory.
+
+#### Example: 
+
+```python3 RetrozymeSearch230207.py -g genomedb/Xenopus_tropicalis/GCF_000004195.4_UCB_Xtro_10.0_genomic.fna -gdb genomedb/Xenopus_tropicalis/GCF_000004195.4_UCB_Xtro_10.0_genomic.fna -p 32 -o Retrozymes_detection/Xenopus_tropicalis```
+
+#### Output: 
+
+
 ### General dependencies are: 
   - python = 3.9.0
   - r-base = 4.1
