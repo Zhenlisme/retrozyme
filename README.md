@@ -31,8 +31,8 @@ The following programs are required to run this script:
   - genometools-genometools = 1.6.2 = py39h58cc16e_6
 
 When running these scripts to analyse several genomes, it is convenient to use a wrapper such as:
-3.	```run_plesearch.sh``` # Wrapper around RetrozymeSearch230207.py
-4.	```run_retrozyme.sh``` # Wrapper around Portable_PLESearch.py
+- ```run_plesearch.sh``` # Wrapper around RetrozymeSearch230207.py
+- ```run_retrozyme.sh``` # Wrapper around Portable_PLESearch.py
 
 
 ## Downstream analysis scripts
