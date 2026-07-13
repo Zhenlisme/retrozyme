@@ -3,14 +3,14 @@ from Bio import SeqIO
 from collections import defaultdict
 from multiprocessing.pool import ThreadPool
 
-## Try to avoid pairing the constraint loops pf minimum hh1 (CUGANGA and GAAANNUH). revised at 30/08/2022
-## Fix the problem of name system of hhm motifs. for example, in previous version, the motifs NC_030677.2-516402-516508-p should be in negative strand.
-## To fix the problem that ltr type of retrozyme contain much of satellite sequence.  revised on 13/09/2022.
-## To solve the problem that some retrozyme doesn't contain hammerhead at all.  1) Find active retrozyme firstly, and 2) find their homologous counterparts. 15/09/2022
-## To detect the full copies of retrozyme in genomes. If is is a retrozyme, then its full copies should be able to be detected in different region (distance larger than 1000 bp) of genome. 29/09/2022
+## Try to avoid pairing the constraint loops of minimum hh1 (CUGANGA and GAAANNUH). Revised at 30/08/2022
+## Fix the problem of the name system of hhm motifs. For example, in the previous version, the motifs NC_030677.2-516402-516508-p should be in the negative strand.
+## To fix the problem that the LTR type of retrozyme contains much satellite sequence.  Revised on 13/09/2022.
+## To solve the problem that some retrozymes don't contain hammerhead at all.  1) Find active retrozyme firstly, and 2) find their homologous counterparts. 15/09/2022
+## To detect the full copies of retrozyme in genomes. If it is a retrozyme, then its full copies should be detectable in different regions (distances greater than 1000 bp) of the genome. 29/09/2022
                 ########## 1. To make consensus sequences of all repeated units or just use the first unit of tandem repeat as query
                 ########## 2. To use the consensus sequences to blastn to find full copies.
-## To split the balstn table into multiple pieces to accelerate the processing (as some genomes are too big to be handled well by previous program).   13/10/2022
+## To split the blastn table into multiple pieces to accelerate the processing (as some genomes are too big to be handled well by the previous versions).   13/10/2022
 class Hmm_Identify:
     def __init__(self, genome_file, hammerhead_description):
         self.genome_file = genome_file
@@ -38,7 +38,7 @@ class Hmm_Identify:
             rh_index = topology_list.index(lh + "'")  ## the index for right helix
 
             left_drop, right_drop = [], []
-            if lh_index + 2 == rh_index:  ### to find the single loop that between paired helixs
+            if lh_index + 2 == rh_index:  ### to find the single loop that between paired helices
                 loop_index = lh_index + 1  ## the index for loop
                 loop_seq = rnabob_list[loop_index]  ## the sequence for the loop
                 if len(loop_seq) <= 4:
@@ -77,7 +77,7 @@ class Hmm_Identify:
                     left_pair_length = constraint1_loc[0][0]
                     right_pair_length = len(rs_seq) - constraint2_loc[0][1]
                     left_seq_range = left_pair_length if left_pair_length < right_pair_length else right_pair_length
-                    ### only the 5' end of first constraint and 3'end second constraint could be paired. So only round 1 pair was considered.
+                    ### only the 5' end of first constraint and 3 ' end of second constraint could be paired. So only round 1 pair was considered.
                     ############### Round 1 to pair 5' end
                 drop_length = 0
                 for i in range(left_seq_range):
@@ -91,10 +91,10 @@ class Hmm_Identify:
                         break
                 ############### Round 2 to pair 3' end
                 left_drop2, right_drop2 = [], []
-                lh2_name = topology_list[lh_index + 2]  ## try to paire the single strand into another end of helix
+                lh2_name = topology_list[lh_index + 2]  ## try to pair the single strand into another end of helix
                 short_length2 = short_length - len(left_drop)
                 drop_length2 = 0
-                if short_length2 > 4 and ls_name not in ignore_list:  ### skip round 2 pairing if loop is constraint
+                if short_length2 > 4 and ls_name not in ignore_list:  ### skip round 2 pairing if loop is constrained
                     for i in range(short_length2 - 4):
                         left_nuc = ls_seq[-i - 1]
                         right_nuc = rs_seq[i]
@@ -268,8 +268,8 @@ class Structure_analyze:
             return False
         else:
             total_list = sorted([location1[0], location1[1], location2[0], location2[1]])
-            portion1 = (total_list[2] - total_list[1] + 1) / (location1[1] - location1[0] + 1)  ## how much proportion the intersected sequence occupied on seq1
-            portion2 = (total_list[2] - total_list[1] + 1) / (location2[1] - location2[0] + 1)  ## how much proportion the intersected sequence occupied on seq2
+            portion1 = (total_list[2] - total_list[1] + 1) / (location1[1] - location1[0] + 1)  ##  proportion of the intersected sequence occupied on seq1
+            portion2 = (total_list[2] - total_list[1] + 1) / (location2[1] - location2[0] + 1)  ##  proportion of the intersected sequence occupied on seq2
             if portion1 >= lportion or portion2 >= rportion:
                 return True
             else:
@@ -295,7 +295,7 @@ class Structure_analyze:
             pass
         elif len(trf_list) == 2:
             first_line, second_line = trf_list
-            if self.intersect(first_line[1:3], second_line[1:3], lportion=0.8, rportion=0.8):  ## The first and second one are the same. Select the one with shorter consensus size.
+            if self.intersect(first_line[1:3], second_line[1:3], lportion=0.8, rportion=0.8):  ## The first and second one are the same. Select the one with the shorter consensus size.
                 if float(first_line[4]) < float(second_line[4]):  ## The current line has a shorter consensus size.
                     Final_lines.append(first_line)
                 else:
