@@ -4,8 +4,8 @@ from multiprocessing.pool import ThreadPool
 from collections import defaultdict
 
 """
-This program is supposed to find and distinguish different subtypes of PLE: Neptune, Poseidon, Nematis. 
-The RT gene of PLE should be in upstream (within 1000 bp) of GIY-YIG gene. (positive strand).
+This program is designed to identify and distinguish different subtypes of PLE: Neptune, Poseidon, and Nematis. 
+The RT gene of PLE should be located upstream of the GIY-YIG gene (within 1000 bp on the positive strand).
 """
 
 class Homologous_search:
@@ -59,7 +59,7 @@ class Homologous_search:
                 if float(c_evalue) > 1e-5 or float(i_evalue) > 1e-5:
                     continue
 
-                ## To transform amino acide coord to nucleotide coord
+                ## To transform amino acid coordinates to nucleotide coordinates
                 if int(end) > int(start):
                     strand = '+'
                     nuc_start = int(aa_start)*3-3+int(start)
@@ -89,9 +89,9 @@ class Homologous_search:
         else:
             total_list = sorted([location1[0], location1[1], location2[0], location2[1]])
             portion1 = (total_list[2] - total_list[1] + 1) / (
-                        location1[1] - location1[0] + 1)  ## how much proportion the intersected sequence occupiedonseq1
+                        location1[1] - location1[0] + 1)  ##  proportion of the intersected sequence occupied on seq1
             portion2 = (total_list[2] - total_list[1] + 1) / (
-                        location2[1] - location2[0] + 1)  ## how much proportion the intersected sequence occupiedonseq2
+                        location2[1] - location2[0] + 1)  ##  proportion of the intersected sequence occupied on seq2
             if portion1 >= lportion and portion2 >= rportion:
                 return True
             else:
@@ -204,7 +204,7 @@ class Homologous_search:
                 GIY_start, GIY_end = splitlines[7:9]
 
                 if self.intersect([int(RT_start), int(RT_end)], [int(GIY_start), int(GIY_end)],
-                                  lportion=0.2, rportion=0.2):   ### If the helicase and rep domain have a intersection, skip
+                                  lportion=0.2, rportion=0.2):   ### If the helicase and rep domain have an intersection, skip
                     continue
                 RT_orf = splitlines[4].split('-')
                 GIY_orf = splitlines[10].split('-')
@@ -225,7 +225,7 @@ class Homologous_search:
             seq_len = len(self.genome_dict[chrm])
             if seq_len < 1000:  ##Skip chrms whose length is shorter than 1000 bp
                 sys.stdout.write(
-                    "Chrm %s will not be used to detect autonomous Helitron/Helentron as its length is shorter than 1000 bp\n" % chrm)
+                    "Chrm %s will not be used to detect TE when they are less than 1000 bp\n" % chrm)
                 continue
             subgenome_list.append((chrm, seq_len))
 
