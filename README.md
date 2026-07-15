@@ -31,10 +31,10 @@ The following programs are required to run this script:
 #### Output: 
 The output directory should contain the following files and directories: 
 - ```retrozyme.tbl```  is the raw output of RetrozymeSearch230207.py providing the coordinates of detected retrozymes. Columns are: Chromosome, Start, End, Repeats, Consensus_size, Strand, TRF, Name, HHR_count, Active_count, Repeat_time (active retrozyme), Consensus, HHR type,  Family, Genome occurrence
-- ```repeat_summary.tbl```  is an extended table for retrozyme.tbl. It contains the rnafold value.
+- ```repeat_summary.tbl```  is an extended table for retrozyme.tbl. It contains the RNAfold Minimum Folding Energy (MFE) value.
 - ```active_retrozyme.bed```  is a table for the coordinates of active retrozyme sequences in its genome. Can be obtained from repeat_summary.tbl. In this table, the MFE value of HHR within each retrozyme should be lower than -5. Columns are: Chromosome, Start, End, Name, MFE of HHR (rnafold), Strand, Family, Repeats, Consensus_size, Span
-- ```active_family.fa```  is the fasta-formatted file of active retrozyme sequences.
-- ```trf/```   is the tandem repeats annotation obtained using trf program when running RetrozymeSearch230207.py with the -t option
+- ```active_family.fa```  contains the FASTA-formatted file of active retrozyme sequences.
+- ```trf/```   is the tandem repeats annotation obtained using the trf program when running RetrozymeSearch230207.py with the -t option
 - ```HMM_cluster/```  contains the relative position and Minimum Folding Energy (MFE) of HHRs in each retrozyme.
 - ```rtztbl/```  contains the genomic coordinates of each retrozyme.
 - ```Clusters/```  contains bed files obtained after clustering based on genomic positions for each retrozyme family.
@@ -60,7 +60,7 @@ The following programs are required to run this script:
 
 #### Output: 
 The ```PLE_identify``` directory should contain the output of Portable_PLESearch.py for annotation of PLEs for each species. 
-- PLE.tbl  #  Table records the coordinates and classification of PLE. The columns are: Chromosome, Start, End, Coord_RT, Coord_GIY, Strand, RT_classify, GIY_classify
+- ```PLE.tbl```  #  Table records the coordinates and classification of PLE. The columns are: Chromosome, Start, End, Coord_RT, Coord_GIY, Strand, RT_classify, GIY_classify
 
 ### General dependencies are: 
   - python = 3.9.0
