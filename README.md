@@ -19,11 +19,11 @@ The following programs are required to run this script:
 ```usage: RetrozymeSearch230207.py [-h] -g GENOME [-gdb BLASTNDB] [-p PROCESS] [-t {0,1}] -o OPDIR```
 
 #### Where: 
-- ```g``` is the name of a fasta formatted genomic sequence for the target genome.
-- ```gdb``` is the name of a fasta formatted sequence to run blastn, it is typically the same as previously.
-- ```p``` is the number of threads.
-- ```t``` is to select the use of trf (false by default).
-- ```OPDIR``` is the name of the output directory.
+- ```g``` mandatory argument. This is the name of a FASTA-formatted genomic sequence for the target genome.
+- ```gdb``` optional argument. This is the name of a fasta formatted sequence to run BLASTn; it is typically the same as previously.
+- ```p``` optional argument. This is the number of threads to use.
+- ```t``` optional argument. This is to select the use of trf (false by default).
+- ```OPDIR``` mandatory argument. This is the name of the output directory.
 
 #### Example: 
 ```python3 RetrozymeSearch230207.py -g genomedb/Xenopus_tropicalis/GCF_000004195.4_UCB_Xtro_10.0_genomic.fna -gdb genomedb/Xenopus_tropicalis/GCF_000004195.4_UCB_Xtro_10.0_genomic.fna -p 32 -o Retrozymes_detection/Xenopus_tropicalis```
@@ -38,6 +38,7 @@ The output directory should contain the following files and directories:
 - ```HMM_cluster/```  contains the relative position and Minimum Folding Energy (MFE) of HHRs in each retrozyme.
 - ```rtztbl/```  contains the genomic coordinates of each retrozyme.
 - ```Clusters/```  contains bed files obtained after clustering based on genomic positions for each retrozyme family.
+- ``GenomeDB.n*``` These files will be present in the output dir if not set in the invocation; they are the blastdb files.
 
         
 ### 2.	Portable_PLESearch.py  #  Script for the detection of autonomous Penelope-like elements in any given genome.
