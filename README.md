@@ -67,6 +67,7 @@ The following programs are required to run this script:
 #### Output: 
 The ```PLE_identify``` directory should contain the output of Portable_PLESearch.py for annotation of PLEs for each species. 
 - ```PLE.tbl```  #  Table records the coordinates and classification of PLE. The columns are: Chromosome, Start, End, Coord_RT, Coord_GIY, Strand, RT_classify, GIY_classify
+- ```genomes/``` contains the FASTA-formatted files of genomic sequences retained for the analysis, and intermediary results of the hmm search and corresponding bed files.
 
 ### General dependencies are: 
   - python = 3.9.0
