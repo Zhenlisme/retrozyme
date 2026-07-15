@@ -33,12 +33,17 @@ The output directory should contain the following files and directories:
 - ```retrozyme.tbl```  is the raw output of RetrozymeSearch230207.py providing the coordinates of detected retrozymes. Columns are: Chromosome, Start, End, Repeats, Consensus_size, Strand, TRF, Name, HHR_count, Active_count, Repeat_time (active retrozyme), Consensus, HHR type,  Family, Genome occurrence
 - ```repeat_summary.tbl```  is an extended table for retrozyme.tbl. It contains the RNAfold Minimum Folding Energy (MFE) value.
 - ```active_retrozyme.bed```  is a table for the coordinates of active retrozyme sequences in its genome. Can be obtained from repeat_summary.tbl. In this table, the MFE value of HHR within each retrozyme should be lower than -5. Columns are: Chromosome, Start, End, Name, MFE of HHR (rnafold), Strand, Family, Repeats, Consensus_size, Span
+- ```retrozyme.trf.monomer.fa``` FASTA-formatted of predicted monomer sequences.
+- ```retrozyme.trf.monomer.fa.clust.info``` Clustering information following the clustering of ```retrozyme.trf.monomer.fa```.
+- ```retrozyme.trf.monomer.cons.fa``` Family-level monomer consensus sequences in FASTA-format.
 - ```active_family.fa```  contains the FASTA-formatted file of active retrozyme sequences.
 - ```trf/```   is the tandem repeats annotation obtained using the trf program when running RetrozymeSearch230207.py with the -t option
 - ```HMM_cluster/```  contains the relative position and Minimum Folding Energy (MFE) of HHRs in each retrozyme.
-- ```rtztbl/```  contains the genomic coordinates of each retrozyme.
+- ```rtztbl/```  contains the genomic coordinates of each retrozyme sorted by chromosome.
 - ```Clusters/```  contains bed files obtained after clustering based on genomic positions for each retrozyme family.
 - ```GenomeDB.n*``` These files will be present in the output dir if not set in the invocation; they are the blastdb files.
+- ```hh1m.descr``` and ```hh1.descr``` Descriptors of hammerhead motifs searched using rnabob.
+- ```genomes/```
 
         
 ### 2.	Portable_PLESearch.py  #  Script for the detection of autonomous Penelope-like elements in any given genome.
