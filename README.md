@@ -19,8 +19,8 @@ The following programs are required to run this script:
 ```usage: RetrozymeSearch230207.py [-h] -g GENOME [-gdb BLASTNDB] [-p PROCESS] [-t {0,1}] -o OPDIR```
 
 #### Where: 
-- ```g``` mandatory argument. This is the name of a FASTA-formatted genomic sequence for the target genome.
-- ```gdb``` optional argument. This is the name of a fasta formatted sequence to run BLASTn; it is typically the same as previously.
+- ```g``` mandatory argument. This is the name of a FASTA-formatted genomic sequence for the target genome. Ideally, this file will be in a folder named after the species (e.g. ```Xenopus_tropicalis/GENOME.fasta```).
+- ```gdb``` optional argument. This is the name of a fasta formatted sequence to run BLASTn; it is typically the same as ```g```.
 - ```p``` optional argument. This is the number of threads to use.
 - ```t``` optional argument. This is to select the use of trf (false by default).
 - ```OPDIR``` mandatory argument. This is the name of the output directory.
