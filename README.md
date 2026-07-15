@@ -87,37 +87,35 @@ When running these scripts to analyse several genomes, it is convenient to use a
 The following scripts are useful for summarising and analysing various features of the genomic distribution of retrozymes.
 
 ### Retrozyme_feature_summary.R
-R script to summarise retrozyme features
-
-### RetrozymeFeature.R
-R script to visualise the retrozyme distribution pattern in each species
+R script to summarise retrozyme features. Input file is ```repeat_summary.tbl``` produced by ```RetrozymeSearch230207.py```.
 
 ### retrozyme_inchrm.R
-R script to visualise the retrozyme distribution on each chromosome genome
+R script to visualise the retrozyme distribution on each chromosome. Input file is ```repeat_summary.tbl``` produced by ```RetrozymeSearch230207.py```. 
 
 ### retrozyme_coord_correlation_with_genes.R
-Overlaps between retrozymes and genomic features
+Overlaps between retrozymes and genomic features. Input file is ```repeat_summary.tbl``` produced by ```RetrozymeSearch230207.py```, and the ```Clusters``` directory. Additional input files are genome-specific: chromosomal sequence lengths obtained by ```genomesize.sh```: ```genomesize.tbl``` and an annotation file in GTF format:```genomic.gtf```.
 
 ### PLE_distribution_across_vert.R
-Distribution of PLEs in each species’ genome
+Distribution of PLEs in each species’ genome. The input file is ```PLE.summary.tbl``` from ```Portable_PLESearch.py```.
 
 ### RNAfoldEnergy.R
-Compute minimum energy of predicted folds and plot as a function of retrozyme family abundance (see rnafold_appearence.png).
+Compute minimum energy of predicted folds and plot as a function of retrozyme family abundance (see rnafold_appearence.png). Input file is ```repeat_summary.tbl``` produced by ```RetrozymeSearch230207.py```, and the ```HMM_cluster``` directory. 
 
 ### Retrozyme_expression.R
-Compute and plot depth of coverage of either ESTs or piRNAs for selected retrozyme elements.
+Compute and plot depth of coverage of either ESTs or piRNAs for selected retrozyme elements. Input files are BAM files obtained from mapped reads.
 
 ### Retrozyme_feature_taxonomics.R
-Compute and plot several features of retrozyme elements across genomes following taxonomy: active counts, monomer size, Maximum of repeated monomers ... in retrozyme arrays (see RepeatLimits_range.png Feature_accross_trees.png).
+Compute and plot several features of retrozyme elements across genomes following taxonomy: active counts, monomer size, Maximum of repeated monomers ... in retrozyme arrays (see RepeatLimits_range.png, Feature_across_trees.png). Input file is ```repeat_summary.tbl``` produced by ```RetrozymeSearch230207.py```, and ```Genome.size.tbl```,```repeat_vary.tbl```, ```tree.nwk``` and ```species_classname.txt```.
 
 ### Retrozyme_tree_with_TE.R
-Plot retrozyme and PLE tree.
+Plot retrozyme and PLE tree. Input file is ```pltr_plus_retrozyme.phylip_phyml_tree.txt```.
 
 ### Rtz_353_331_Ax.R
-Computes minimum energy of predicted folds for Rtz331_353_Ax sequences and plots an histogram (see Rtz331_353_Ax_rnafold.png).
+Computes minimum energy of predicted folds for Rtz331_353_Ax sequences and plots a histogram (see Rtz331_353_Ax_rnafold.png).
 
 ### genomesize.sh
-Compute and sort genomic sequence by size.
+Computes and sorts genomic sequences by size. 
 
 ### retrozyme_coord_correlation_with_gene.R
-Compute overlap between Xenopus laevis and Xenopus tropicalis retrozymes and gene features: exons, introns, intergenic (see Genomic_region_proportion.png).
+Compute overlap between Xenopus laevis and Xenopus tropicalis retrozymes and gene features: exons, introns, intergenic (see Genomic_region_proportion.png). Additional input files are genome-specific: chromosomal sequence lengths obtained by ```genomesize.sh```: ```genomesize.tbl``` and an annotation file in GTF format:```genomic.gtf```.
+
