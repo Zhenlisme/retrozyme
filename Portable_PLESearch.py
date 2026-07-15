@@ -45,11 +45,11 @@ class Homologous_search:
             for line in F:
                 if line.startswith('#'):
                     continue
-                splitlines = re.split('\s+', line.rstrip())
+                splitlines = re.split('\\s+', line.rstrip())
                 sub_class = splitlines[3]
                 subchrname = "_".join(splitlines[0].split('_')[:-1])
                 chrm_name, START = subchrname.split('startat')
-                start, end = re.findall('\[(\d+)\s+-\s+(\d+)\]', line)[0]
+                start, end = re.findall('\\[(\\d+)\\s+-\\s+(\\d+)\\]', line)[0]
                 start = str(int(start) + int(START))
                 end = str(int(end) + int(START))
 
@@ -108,7 +108,7 @@ class Homologous_search:
             for line in F:
                 if line.startswith('>'):
                     chrm_name = "_".join(line.strip('\n').split(' ')[0].split('_')[:-1])
-                    start, end = re.findall('\[(\d+)\s+-\s+(\d+)\]', line)[0]
+                    start, end = re.findall('\\[(\\d+)\\s+-\\s+(\\d+)\\]', line)[0]
                     ORF_OPT.append(start)
                     ORF_OPT.append(end)
         ORF_OPT = sorted(ORF_OPT, key=lambda x: int(x))
