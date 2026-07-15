@@ -32,7 +32,7 @@ class Hmm_Identify:
         rnabob_list = rnabob_opt.strip('|').split('|')
         topology_list = topology_describe.split(' ')
         topology_dict = {topology_list[i]: rnabob_list[i] for i in range(len(rnabob_list))}
-        left_helix = set(re.findall('(h\d+)', topology_describe))
+        left_helix = set(re.findall('(h\\d+)', topology_describe))
         for lh in left_helix:
             lh_index = topology_list.index(lh)  ## the index for left helix
             rh_index = topology_list.index(lh + "'")  ## the index for right helix
@@ -144,15 +144,15 @@ class Hmm_Identify:
                 line = repr(i).replace("b'", "").replace("\\n'", "")
                 if line.startswith('>'):
                     loop_name = line.strip('>\n')
-                elif re.findall('\d', line):
-                    loop_name_dict[loop_name] = re.split('\s+', line)[0]
+                elif re.findall('\\d', line):
+                    loop_name_dict[loop_name] = re.split('\\s+', line)[0]
 
 
         opt_topology = []
         for idx in range(len(rnabob_opt)):
             topology_name = topology_list[idx]
             length_element = len(rnabob_opt[idx])
-            if re.fullmatch('h\d+', topology_name):
+            if re.fullmatch('h\\d+', topology_name):
                 opt_topology.append((idx, '(' * length_element))
             elif topology_name.endswith("'"):
                 opt_topology.append((idx, ')' * length_element))
@@ -169,8 +169,8 @@ class Hmm_Identify:
         seq_dict = {}
         with open(input_file, 'r') as F:
             for line in F:
-                if re.match('\d', line.strip()):
-                    location = tuple(re.split('\s+', line.strip())[:3])
+                if re.match('\\d', line.strip()):
+                    location = tuple(re.split('\\s+', line.strip())[:3])
                     seq_dict[location] = ''
                 else:
                     seq_dict[location] = line.rstrip()
