@@ -38,7 +38,7 @@ The output directory should contain the following files and directories:
 - ```HMM_cluster/```  contains the relative position and Minimum Folding Energy (MFE) of HHRs in each retrozyme.
 - ```rtztbl/```  contains the genomic coordinates of each retrozyme.
 - ```Clusters/```  contains bed files obtained after clustering based on genomic positions for each retrozyme family.
-- ``GenomeDB.n*``` These files will be present in the output dir if not set in the invocation; they are the blastdb files.
+- ```GenomeDB.n*``` These files will be present in the output dir if not set in the invocation; they are the blastdb files.
 
         
 ### 2.	Portable_PLESearch.py  #  Script for the detection of autonomous Penelope-like elements in any given genome.
