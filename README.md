@@ -43,7 +43,7 @@ The output directory should contain the following files and directories:
 - ```Clusters/```  contains bed files obtained after clustering based on genomic positions for each retrozyme family.
 - ```GenomeDB.n*``` These files will be present in the output dir if not set in the invocation; they are the blastdb files.
 - ```hh1m.descr``` and ```hh1.descr``` Descriptors of hammerhead motifs searched using rnabob.
-- ```genomes/```
+- ```genomes/``` contains the FASTA-formatted files of genomic sequences retained for the analysis.
 
         
 ### 2.	Portable_PLESearch.py  #  Script for the detection of autonomous Penelope-like elements in any given genome.
