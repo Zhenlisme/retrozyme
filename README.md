@@ -17,6 +17,7 @@ The following programs are required to run this script:
 
 ### Usage of RetrozymeSearch
 ```usage: RetrozymeSearch230207.py [-h] -g GENOME [-gdb BLASTNDB] [-p PROCESS] [-t {0,1}] -o OPDIR```
+
 #### Where: 
 - ```g``` is the name of a fasta formatted genomic sequence for the target genome.
 - ```gdb``` is the name of a fasta formatted sequence to run blastn, it is typically the same as previously.
@@ -25,10 +26,18 @@ The following programs are required to run this script:
 - ```OPDIR``` is the name of the output directory.
 
 #### Example: 
-
 ```python3 RetrozymeSearch230207.py -g genomedb/Xenopus_tropicalis/GCF_000004195.4_UCB_Xtro_10.0_genomic.fna -gdb genomedb/Xenopus_tropicalis/GCF_000004195.4_UCB_Xtro_10.0_genomic.fna -p 32 -o Retrozymes_detection/Xenopus_tropicalis```
 
 #### Output: 
+The output directory should contain the following files and directories: 
+- retrozyme.tbl  #  Raw output of RetrozymeSearch230207.py recording the coordinates of detected retrozymes. Columns are: Chromosome, Start, End, Repeats, Consensus_size, Strand, TRF, Name, HHR_count, Active_count, Repeat_time (active retrozyme), Consensus, HHR type,  Family, Genome occurrence
+- repeat_summary.tbl  #  Extended table for retrozyme.tbl. It contains the rnafold value.
+- active_retrozyme.bed  #   Table for the coordinates of active retrozyme sequences in its genome. Can be obtained from repeat_summary.tbl. In this table, the MFE value of HHR within each retrozyme should be lower than -5. Columns are: Chromosome, Start, End, Name, MFE of HHR (rnafold), Strand, Family, Repeats, Consensus_size, Span
+- active_family.fa  #  fasta format of active retrozyme sequences.
+- trf/   #  Tandem repeats annotation using trf program if using the -t option
+- HMM_cluster/   #  The relative position and MFE of HHRs in each retrozyme.
+- rtztbl/  # The coordinates of each retrozyme
+- Clusters/  # The full copy of each retrozyme family
 
         
 ### 2.	Portable_PLESearch.py  #  Script for the detection of autonomous Penelope-like elements in any given genome.
@@ -37,21 +46,21 @@ The following programs are required to run this script:
 - [getorf from emboss = 6.6.0](http://emboss.open-bio.org/)
 - [hmmer  = 3.3.2](http://hmmer.org/)
 
-usage: Portable_PLESearch.py [-h] -hmm HMM -g GENOME -o OPDIR [-p PROCESS]
 ### Usage of Portable_PLESearch
 ```usage: Portable_PLESearch.py [-h] -hmm HMM -g GENOME -o OPDIR [-p PROCESS]```
+
 #### Where: 
-- ```g``` is the name of a fasta formatted genomic sequence for the target genome.
-- ```h``` is the name of the hmm to use.
+- ```g``` is the name of a fasta-formatted genomic sequence for the target genome.
+- ```h``` is the name of the HMM to use.
 - ```p``` is the number of threads.
 - ```OPDIR``` is the name of the output directory.
 
 #### Example: 
-
-```python3 RetrozymeSearch230207.py -g genomedb/Xenopus_tropicalis/GCF_000004195.4_UCB_Xtro_10.0_genomic.fna -gdb genomedb/Xenopus_tropicalis/GCF_000004195.4_UCB_Xtro_10.0_genomic.fna -p 32 -o Retrozymes_detection/Xenopus_tropicalis```
+```python3 Portable_PLESearch.py -hmm ./PLE.hmm -g /home/li/genomedb/Xenopus_tropicalis/GCF_000004195.4_UCB_Xtro_10.0_genomic.fna -o PLE_identify/Xenopus_tropicalis -p 32 >Xenopus_tropicalis.log 2>&1```
 
 #### Output: 
-
+The ```PLE_identify``` directory should contain the output of Portable_PLESearch.py for annotation of PLEs for each species. 
+- PLE.tbl  #  Table records the coordinates and classification of PLE. The columns are: Chromosome, Start, End, Coord_RT, Coord_GIY, Strand, RT_classify, GIY_classify
 
 ### General dependencies are: 
   - python = 3.9.0
@@ -68,7 +77,6 @@ When running these scripts to analyse several genomes, it is convenient to use a
 
 
 ## Downstream analysis scripts
-
 The following scripts are useful for summarising and analysing various features of the genomic distribution of retrozymes.
 
 ### Retrozyme_feature_summary.R
