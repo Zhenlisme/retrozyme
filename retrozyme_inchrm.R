@@ -1,19 +1,23 @@
-rm(list=ls())
-gc()
+library(here)
 library(ggplot2)
+options(bedtools.path = "/opt/homebrew/bin/")
 library(bedtoolsr)
-options(bedtools.path = "/home/zhenli/bioinfo/bedtools2/bin/")
+
+
+
 
 coverage_df_func=function(wkdir){
-  setwd(wkdir)
-  retrozyme_tbl=read.csv2('repeat_summary.tbl',  sep = '\t', header = T, stringsAsFactors = F)
+  retrozyme_tbl_file <- paste(wkdir,"repeat_summary.tbl",sep="/")
+  retrozyme_tbl=read.csv2(retrozyme_tbl_file,  sep = '\t', header = T, stringsAsFactors = F)
   retrozyme_tbl$rnafold=as.numeric(retrozyme_tbl$rnafold)
   active_family=unique(retrozyme_tbl[which(retrozyme_tbl$rnafold<=-5), 'family'])
 
-  chrm_info=read.csv('chrminfo.txt', sep = '\t', header = F, stringsAsFactors = F)
+  chrm_info_file=paste(wkdir,"chrminfo.txt",sep="/")
+  chrm_info=read.csv(chrm_info_file, sep = '\t', header = F, stringsAsFactors = F)
   colnames(chrm_info)=c('chrmid', 'chrmname')
 
-  genome_window_df=read.csv('genomewindow_w100k_s50k.bed', stringsAsFactors = F, header = F, sep = '\t')
+  genome_window_df_file <- paste(wkdir,"genomewindow_w100k_s50k.bed",sep="/")
+  genome_window_df=read.csv(genome_window_df_file, stringsAsFactors = F, header = F, sep = '\t')
   colnames(genome_window_df)=c('chrmid', 'start', 'end')
 
   genome_window_df=genome_window_df[which(genome_window_df$chrmid %in% chrm_info$chrmid),]
@@ -39,7 +43,7 @@ coverage_df_func=function(wkdir){
 
   ## To merge all monomer dataframe and multimer frames, respectively.
   for(clustername in active_family){
-  clusterfile=paste('Clusters/', clustername, '.clust.bed6', sep = '')
+  clusterfile=paste(wkdir,"/Clusters/", clustername, ".clust.bed6", sep = "")
   classify_list = monomer_multimer_split(clusterfile)
   monomer_total_bed=rbind(monomer_total_bed, classify_list[[1]])
   dimer_total_bed=rbind(dimer_total_bed, classify_list[[2]])
@@ -75,11 +79,13 @@ coverage_df_func=function(wkdir){
   return(coverage_total_df)
 }
 
-Xl_coverage_df=coverage_df_func('/home/zhenli/remote2/Toutatis_backup/Retrozyme/Retrozymes_detection/Xenopus_laevis/')
-Xt_coverage_df=coverage_df_func('/home/zhenli/remote2/Toutatis_backup/Retrozyme/Retrozymes_detection/Xenopus_tropicalis/')
-Xb_coverage_df=coverage_df_func('/home/zhenli/remote2/Toutatis_backup/Retrozyme/Retrozymes_detection/Xenopus_borealis/')
+Xl_dir<-here("retrozyme_data","Retrozymes_detection","Xenopus_laevis")
+Xt_dir<-here("retrozyme_data","Retrozymes_detection","Xenopus_tropicalis")
+Xb_dir<-here("retrozyme_data","Retrozymes_detection","Xenopus_borealis")
 
-setwd('~/remote2/Toutatis_backup/Retrozyme/')
+Xl_coverage_df=coverage_df_func(Xl_dir)
+Xt_coverage_df=coverage_df_func(Xt_dir)
+Xb_coverage_df=coverage_df_func(Xb_dir)
 
 Xl_coverage_df$species='XL'
 Xb_coverage_df$species='XB'
@@ -104,13 +110,13 @@ Xenopus$label=factor(Xenopus$label, levels = c(paste(chrmbasenm, c('XL'), sep = 
                                                paste(chrmbasenm, c('XB'), sep = '-'),
                                                paste(Xt_chrmname, c('XT'), sep = '-')))
 
-ggplot(Xenopus, aes(x=start, y=Coverage, color=type))+
+plot_xenopus <- ggplot(Xenopus, aes(x=start, y=Coverage, color=type))+
   geom_line(linewidth=0.6)+
   theme_bw()+
   scale_x_continuous(name = "Position (Mb)",n.breaks = 3) +
   scale_y_continuous(name = "Coverage %") +
   facet_wrap(.~label, ncol = 9, scales = 'free_x')+
-  labs(title = "Retrozyme coverage across chromosomes of Xenopus")+
+  labs(title = "Retrozyme coverage across Xenopus chromosomes")+
   theme(axis.text = element_text(size=12,face = "bold",colour = "black", family = 'arial'),
         text = element_text(size=12,face = "bold",colour = "black", family = 'arial'))+
   coord_cartesian(ylim=c(-2,2))+
@@ -120,6 +126,67 @@ ggplot(Xenopus, aes(x=start, y=Coverage, color=type))+
         axis.text.x = element_text(hjust = 0.8))+
   scale_color_manual(values = c('#B99B6B', '#698269', '#913175'))
 
-ggsave('chrm_distribution.png', width = 14, height = 10)
+
+plot_xenopus_laevis <- Xenopus %>% filter(species=="XL") %>% ggplot(aes(x=start, y=Coverage, color=type))+
+  geom_line(linewidth=0.6)+
+  theme_bw()+
+  scale_x_continuous(name = "Position (Mb)",n.breaks = 3) +
+  scale_y_continuous(name = "Coverage %") +
+  facet_wrap(.~label, ncol = 9, scales = 'free_x')+
+  labs(title = "Retrozyme coverage across Xenopus laevis chromosomes")+
+  theme(axis.text = element_text(size=12,face = "bold",colour = "black", family = 'arial'),
+        text = element_text(size=12,face = "bold",colour = "black", family = 'arial'))+
+  coord_cartesian(ylim=c(-2,2))+
+  theme(legend.position = "right",legend.title = element_blank())+
+  theme(plot.title = element_text(hjust = 0.5, family = 'arial'))+
+  theme(panel.spacing = unit(0.8, "lines"),
+        axis.text.x = element_text(hjust = 0.8))+
+  scale_color_manual(values = c('#B99B6B', '#698269', '#913175'))
+plot_xenopus_laevis
+Xl_chrm_distribution<-here("img","Xl_chrm_distribution.png")
+ggsave(Xl_chrm_distribution, width = 14, height = 10)
+
+
+
+plot_xenopus_borealis <- Xenopus %>% filter(species=="XB") %>% ggplot(aes(x=start, y=Coverage, color=type))+
+  geom_line(linewidth=0.6)+
+  theme_bw()+
+  scale_x_continuous(name = "Position (Mb)",n.breaks = 3) +
+  scale_y_continuous(name = "Coverage %") +
+  facet_wrap(.~label, ncol = 9, scales = 'free_x')+
+  labs(title = "Retrozyme coverage across Xenopus borealis chromosomes")+
+  theme(axis.text = element_text(size=12,face = "bold",colour = "black", family = 'arial'),
+        text = element_text(size=12,face = "bold",colour = "black", family = 'arial'))+
+  coord_cartesian(ylim=c(-2,2))+
+  theme(legend.position = "right",legend.title = element_blank())+
+  theme(plot.title = element_text(hjust = 0.5, family = 'arial'))+
+  theme(panel.spacing = unit(0.8, "lines"),
+        axis.text.x = element_text(hjust = 0.8))+
+  scale_color_manual(values = c('#B99B6B', '#698269', '#913175'))
+plot_xenopus_borealis
+Xb_chrm_distribution<-here("img","Xb_chrm_distribution.png")
+ggsave(Xb_chrm_distribution, width = 14, height = 10)
+
+
+
+plot_xenopus_tropicalis <- Xenopus %>% filter(species=="XT") %>% ggplot(aes(x=start, y=Coverage, color=type))+
+  geom_line(linewidth=0.6)+
+  theme_bw()+
+  scale_x_continuous(name = "Position (Mb)",n.breaks = 3) +
+  scale_y_continuous(name = "Coverage %") +
+  facet_wrap(.~label, ncol = 9, scales = 'free_x')+
+  labs(title = "Retrozyme coverage across Xenopus tropicalis chromosomes")+
+  theme(axis.text = element_text(size=12,face = "bold",colour = "black", family = 'arial'),
+        text = element_text(size=12,face = "bold",colour = "black", family = 'arial'))+
+  coord_cartesian(ylim=c(-2,2))+
+  theme(legend.position = "right",legend.title = element_blank())+
+  theme(plot.title = element_text(hjust = 0.5, family = 'arial'))+
+  theme(panel.spacing = unit(0.8, "lines"),
+        axis.text.x = element_text(hjust = 0.8))+
+  scale_color_manual(values = c('#B99B6B', '#698269', '#913175'))
+
+plot_xenopus_tropicalis
+Xt_chrm_distribution<-here("img","Xt_chrm_distribution.png")
+ggsave(Xt_chrm_distribution, width = 14, height = 10)
 
 
