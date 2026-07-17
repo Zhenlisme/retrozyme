@@ -1,19 +1,17 @@
-rm(list=ls())
-gc()
-
+library(here)
 library(ggtree)
 library(ggplot2)
 library(ggtreeExtra)
 library(treeio)
 library(ggnewscale)
 library(ggstar)
-BiocManager::install("ggtreeExtra")
+#BiocManager::install("ggtreeExtra")
 
-setwd('../Retrozyme/')
-genome_size_df=read.csv2('Genome.size.tbl', stringsAsFactors = F, header = F, sep = '\t')
+
+genome_size_df=read.csv2(here("retrozyme_data","Genome.size.tbl"), stringsAsFactors = F, header = F, sep = '\t')
 colnames(genome_size_df)=c('species', 'genomesize')
 
-retrozyme_summary = read.csv2('repeat_summary.tbl', stringsAsFactors = F, header = T, sep = '\t')
+retrozyme_summary = read.csv2(here("retrozyme_data","repeat_summary.tbl"), stringsAsFactors = F, header = T, sep = '\t')
 
 retrozyme_summary=merge(retrozyme_summary, genome_size_df)
 
@@ -21,11 +19,11 @@ retrozyme_summary$genomesize=as.numeric(retrozyme_summary$genomesize)/1000000000
 retrozyme_summary$species=sapply(retrozyme_summary$species, function(x){gsub('_', ' ', x)})
 
 
-species_groupinfo_df=read.csv2('species_classname.txt', stringsAsFactors = F, header = F, sep = '\t')
+species_groupinfo_df=read.csv2(here("retrozyme_data","species_classname.txt"), stringsAsFactors = F, header = F, sep = '\t')
 colnames(species_groupinfo_df)=c('species', 'clades')
 retrozyme_summary=merge(retrozyme_summary, species_groupinfo_df)
 
-tree=read.tree("tree.nwk")
+tree=read.tree(here("retrozyme_data","tree.nwk"))
 tree$tip.label=sapply(tree$tip.label, function(x){gsub('_', ' ', x)})
 groupInfo <- split(species_groupinfo_df$species, species_groupinfo_df$clades)
 tree_plot=ggtree(groupOTU(tree, groupInfo), size=1, aes(color=group, face='bold'))
@@ -37,7 +35,7 @@ species_name
 color_range
 
 #########################################Retrozyme varies ####################
-retrozyme_vary=read.csv2('repeat_vary.tbl', stringsAsFactors = F, header = T, sep = '\t')
+retrozyme_vary=read.csv2(here("retrozyme_data","repeat_vary.tbl"), stringsAsFactors = F, header = T, sep = '\t')
 retrozyme_vary$species=sapply(retrozyme_vary$species, function(x){gsub('_', ' ', x)})
 retrozyme_vary=merge(retrozyme_vary, species_groupinfo_df)
 head(retrozyme_vary)
@@ -63,7 +61,8 @@ ggplot(retrozyme_vary, aes(y=species, x=as.numeric(cons_length), color=clades))+
   scale_color_manual(values=c("#1f77b4", "#d62728", "#2ca02c", "#ff7f0e", "#9467bd",
                              "#f7b6d2", "#e377c2", "#7f7f7f", "#8c564b"))
 
-ggsave("MonomerSize_range.png",width = 12,height =12)
+Monomer_size_range_image = here("img","MonomerSize_range.png")
+ggsave(Monomer_size_range_image,width = 12,height =12)
 
 
 ggplot(retrozyme_vary, aes(y=species, x=as.numeric(rpt_limit), color=clades))+
@@ -82,7 +81,8 @@ ggplot(retrozyme_vary, aes(y=species, x=as.numeric(rpt_limit), color=clades))+
   scale_color_manual(values=c("#1f77b4", "#d62728", "#2ca02c", "#ff7f0e", "#9467bd",
                               "#f7b6d2", "#e377c2", "#7f7f7f", "#8c564b"))
 
-ggsave("RepeatLimits_range.png",width = 12,height = 12)
+RepeatLimits_range_image = here("img","RepeatLimits_range.png")
+ggsave(RepeatLimits_range_image,width = 12,height = 12)
 
 #######################################################
 
@@ -161,5 +161,6 @@ monomer_proportion=family_num+
         legend.position = 'bottom')
 monomer_proportion
 
-ggsave("Feature_accross_trees.png",width = 20,height =10)
+Feature_across_trees_image = here("img","Feature_across_trees.png")
+ggsave(Feature_across_trees_image,width = 20,height =10)
 
