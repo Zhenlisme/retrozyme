@@ -1,6 +1,3 @@
-rm(list=ls())
-gc()
-
 library(here)
 library(cowplot)
 library(ggtree)
@@ -165,5 +162,6 @@ cowplot::plot_grid(p, p_genome_size, p_active_count, p_rpt_limit,
                    rel_widths = c(1, 2, 1, 1, 1, 1, 0.8), 
                    ncol = 7)
 
-ggsave('retrozyme_feature_character.jpeg', width = 15, height = 8)
+retrozyme_feature_character_image = here("img","retrozyme_feature_character.jpeg")
+ggsave(retrozyme_feature_character_image, width = 15, height = 8)
 
