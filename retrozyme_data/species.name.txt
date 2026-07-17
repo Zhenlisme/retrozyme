@@ -1,0 +1,35 @@
+Acropora millepora
+Ambystoma mexicanum
+Amphilophus citrinellus
+Anas platyrhynchos
+Anolis carolinensis
+Aquila chrysaetos chrysaetos
+Bufo bufo
+Bungarus multicinctus
+Callorhinchus milii
+Chionodraco hamatus
+Corvus cornix cornix
+Crocodylus porosus
+Cyprinus carpio
+Danio rerio
+Drosophila melanogaster
+Equus caballus
+Gadus morhua
+Geotrypetes seraphini
+Gopherus evgoodei
+Homo sapiens
+Latimeria chalumnae
+Monodelphis domestica
+Myiopsitta monachus
+Myotis lucifugus
+Neomonachus schauinslandi
+Ophonus ardosiacus
+Rana temporaria
+Salmo salar
+Takifugu rubripes
+Tribolium freemani
+Tursiops truncatus
+Xenopus borealis
+Xenopus laevis
+Xenopus tropicalis
+Zootoca vivipara
