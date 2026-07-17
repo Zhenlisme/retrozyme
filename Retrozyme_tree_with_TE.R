@@ -1,18 +1,16 @@
-rm(list=ls())
-gc()
-
+library(here)
 library(ggtree)
 library(ggplot2)
 library(ggtreeExtra)
 library(treeio)
 library(ggnewscale)
 library(ggstar)
-setwd('/home/zhenli/remote2/Toutatis_backup/Retrozyme/pLTR/XT')
+
 
 #groupInfo <- split(species_groupinfo_df$species, species_groupinfo_df$clades)
 
 
-tree=read.tree("pltr_plus_retrozyme.phylip_phyml_tree.txt")
+tree=read.tree(here("retrozyme_data","pLTR","XT","pltr_plus_retrozyme.phylip_phyml_tree.txt"))
 tree$node.label=sapply(tree$node.label, function(x){
   if(stringi::stri_length(x)==0){
     return(x)
@@ -61,5 +59,6 @@ ggtree(groupOTU(tree, groupInfo), size=.7, aes(color=group), layout = 'circular'
         legend.spacing.y = unit(0.1, "cm"),
         legend.position = 'right')
 
-ggsave("Rtz_PLE.tree.png",width = 8,height =8)
+Rtz_PLE_tree_image = here("img","Rtz_PLE.tree.png")
+ggsave(Rtz_PLE_tree_image,width = 8,height =8)
 
