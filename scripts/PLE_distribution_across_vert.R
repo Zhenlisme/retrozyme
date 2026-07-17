@@ -1,6 +1,7 @@
 rm(list=ls())
 gc()
 
+library(here)
 library(cowplot)
 library(ggtree)
 library(ggplot2)
@@ -8,9 +9,9 @@ library(ggtreeExtra)
 library(treeio)
 library(ggnewscale)
 library(ggstar)
-setwd('/home/zhenli/remote2/Toutatis_backup/Retrozyme/')
 
-PLE_prodf=read.csv2('PLE.summary.tbl', stringsAsFactors = F, header = F, sep = '\t')
+
+PLE_prodf=read.csv2(here("retrozyme_data","PLE.summary.tbl"), stringsAsFactors = F, header = F, sep = '\t')
 colnames(PLE_prodf)=c('species', 'PLE', 'count')
 PLE_prodf$PLE=sapply(PLE_prodf$PLE, function(x){gsub('RT_', '', x)})
 PLE_prodf$PLE=sapply(PLE_prodf$PLE, function(x){gsub('GIY_', '', x)})
@@ -27,7 +28,7 @@ PLE_prodf$PLE_type=sapply(PLE_prodf$PLE, function(x){
 PLE_prodf=PLE_prodf[which(PLE_prodf$PLE_typ != 'NA'), ]
 PLE_prodf$species=sapply(PLE_prodf$species, function(x){gsub('_', ' ', x)})
 
-species_groupinfo_df=read.csv2('species_classname.txt', stringsAsFactors = F, header = F, sep = '\t')
+species_groupinfo_df=read.csv2(here("retrozyme_data","species_classname.txt"), stringsAsFactors = F, header = F, sep = '\t')
 colnames(species_groupinfo_df)=c('species', 'clades')
 head(species_groupinfo_df)
 
@@ -36,7 +37,7 @@ PLE_prodf=merge(PLE_prodf, species_groupinfo_df, all.y = T)
 groupInfo <- split(species_groupinfo_df$species, species_groupinfo_df$clades)
 
 
-tree=read.tree("tree.nwk")
+tree=read.tree(here("retrozyme_data","tree.nwk"))
 tree$tip.label=sapply(tree$tip.label, function(x){gsub('_', ' ', x)})
 
 
@@ -75,11 +76,12 @@ pbar=ggplot(PLE_prodf, aes(x=count, y=species, fill=PLE_type))+
 
 cowplot::plot_grid(p,pbar, rel_widths = c(1, 1.8), vjust = c(1, 10))
 
-ggsave('PLE_proportion.png', width = 8, height = 8)
+PLE_proportion_image = here("img","PLE_proportion.png")
+ggsave(PLE_proportion_image, width = 8, height = 8)
 
-genome_size_df=read.csv2('Genome.size.tbl', stringsAsFactors = F, header = F, sep = '\t')
+genome_size_df=read.csv2(here("retrozyme_data","Genome.size.tbl"), stringsAsFactors = F, header = F, sep = '\t')
 colnames(genome_size_df)=c('species', 'genomesize')
-retrozyme_summary = read.csv2('repeat_summary.tbl', stringsAsFactors = F, header = T, sep = '\t')
+retrozyme_summary = read.csv2(here("retrozyme_data","repeat_summary.tbl"), stringsAsFactors = F, header = T, sep = '\t')
 
 retrozyme_summary=merge(retrozyme_summary, genome_size_df)
 
@@ -164,3 +166,4 @@ cowplot::plot_grid(p, p_genome_size, p_active_count, p_rpt_limit,
                    ncol = 7)
 
 ggsave('retrozyme_feature_character.jpeg', width = 15, height = 8)
+
