@@ -3,12 +3,12 @@ from Bio import SeqIO
 from collections import defaultdict
 from multiprocessing.pool import ThreadPool
 
-## Try to avoid pairing the constraint loops of minimum hh1 (CUGANGA and GAAANNUH). Revised at 30/08/2022
+## Try to avoid pairing the constraint loops of minimum hh1 (CUGANGA and GAAANNUH). Revised on 30/08/2022
 ## Fix the problem of the name system of hhm motifs. For example, in the previous version, the motifs NC_030677.2-516402-516508-p should be in the negative strand.
 ## To fix the problem that the LTR type of retrozyme contains much satellite sequence.  Revised on 13/09/2022.
-## To solve the problem that some retrozymes don't contain hammerhead at all.  1) Find active retrozyme firstly, and 2) find their homologous counterparts. 15/09/2022
+## To solve the problem that some retrozymes don't contain hammerhead at all.  1) Find active retrozymes first, and 2) find their homologous counterparts. 15/09/2022
 ## To detect the full copies of retrozyme in genomes. If it is a retrozyme, then its full copies should be detectable in different regions (distances greater than 1000 bp) of the genome. 29/09/2022
-                ########## 1. To make consensus sequences of all repeated units or just use the first unit of tandem repeat as query
+                ########## 1. To make consensus sequences of all repeated units or just use the first unit of the tandem repeat as a query
                 ########## 2. To use the consensus sequences to blastn to find full copies.
 ## To split the blastn table into multiple pieces to accelerate the processing (as some genomes are too big to be handled well by the previous versions).   13/10/2022
 class Hmm_Identify:
