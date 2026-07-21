@@ -398,7 +398,7 @@ class Structure_analyze:
         bnm = os.path.basename(hits_fa)
         trf_opfile = ''.join(['trf/',bnm, '.dat'])
         with open(trf_opfile, 'w') as trF:
-            TRF_task=subprocess.Popen(['trf', hits_fa ,'2', '7', '7', '80', '10', '50', '1000', '-h', '-ngs'], stderr=subprocess.DEVNULL, stdout=trF)
+            TRF_task=subprocess.Popen(['trf', hits_fa ,'2', '7', '7', '80', '10', '50', '1000', '-l 6','-h', '-ngs'], stderr=subprocess.DEVNULL, stdout=trF)
             TRF_task.wait()
         return trf_opfile
     def Main(self, datfile):
