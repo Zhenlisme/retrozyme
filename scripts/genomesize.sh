@@ -1,5 +1,7 @@
 #Alternatively use bioawk from https://github.com/lh3/bioawk 
 # bioawk -c fastx '{print $name, length($seq}' ../../genomedb/Acropora_millepora/GCF_013753865.1_Amil_v2.1_genomic.fna|sort -k1,1 -k2,2 > Retrozymes_detection/Acropora_millepora/genomesize.tbl
+#Another option is seqkit
+#seqkit stats -T ../../genomedb/Acropora_millepora/GCF_013753865.1_Amil_v2.1_genomic.fna|awk '{print $1,$5}'|grep -v "file"|sort -k1,1 -k2,2 > Retrozymes_detection/Acropora_millepora/genomesize.tbl
 Seqlen.py -g ../../genomedb/Acropora_millepora/GCF_013753865.1_Amil_v2.1_genomic.fna|sort -k1,1 -k2,2 > Retrozymes_detection/Acropora_millepora/genomesize.tbl
 Seqlen.py -g ../../genomedb/Ambystoma_mexicanum/GCA_002915635.3_AmbMex60DD_genomic.fna|sort -k1,1 -k2,2 > Retrozymes_detection/Ambystoma_mexicanum/genomesize.tbl
 Seqlen.py -g ../../genomedb/Amphilophus_citrinellus/GCA_013435755.1_ASM1343575v1_genomic.fna|sort -k1,1 -k2,2 > Retrozymes_detection/Amphilophus_citrinellus/genomesize.tbl
